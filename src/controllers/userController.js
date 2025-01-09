@@ -33,8 +33,16 @@ module.exports = {
 
       console.log('Utente registrato con successo:', newUser.email);
 
+      // Genera JWT
+      const token = jwt.sign(
+        { userId: newUser.id, email: newUser.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
       res.status(201).json({ 
         message: 'Utente registrato con successo.',
+        token,
         user: {
           id: newUser.id,
           email: newUser.email,
@@ -71,7 +79,7 @@ module.exports = {
         return res.status(401).json({ message: 'Credenziali non valide.' });
       }
 
-      // Generate JWT
+      // Genera JWT
       const token = jwt.sign(
         { userId: user.id, email: user.email },
         process.env.JWT_SECRET,
