@@ -30,6 +30,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     unique: true,
     allowNull: false,
+    defaultValue: () => uuidv4(), // Imposta referralCode automaticamente
   },
   referredBy: {
     type: DataTypes.STRING,
@@ -60,6 +61,7 @@ const User = sequelize.define('User', {
       if (user.password) {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
+        console.log('Password hashata.');
       }
       // Genera un referralCode unico
       if (!user.referralCode) {
@@ -73,6 +75,7 @@ const User = sequelize.define('User', {
       if (user.changed('password')) {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
+        console.log('Password aggiornata e hashata.');
       }
     },
   },
