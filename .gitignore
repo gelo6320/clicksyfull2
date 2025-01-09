@@ -1,0 +1,7 @@
+# Ignora il file di configurazione delle variabili d'ambiente
+.env
+
+# Ignora la cartella node_modules
+node_modules/
+
+.DS_Store
