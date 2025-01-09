@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
   // Registrazione utente
   registerUser: async (req, res) => {
+    console.log('registerUser chiamato');
     try {
       const { email, password, referredBy } = req.body;
 
@@ -48,6 +49,7 @@ module.exports = {
 
   // Login utente
   loginUser: async (req, res) => {
+    console.log('loginUser chiamato');
     try {
       const { email, password } = req.body;
       console.log('Login richiesto:', { email });
@@ -95,10 +97,10 @@ module.exports = {
     }
   },
 
-  // Get current user
+  // Recupera i dati dell'utente corrente
   getCurrentUser: async (req, res) => {
+    console.log('getCurrentUser chiamato');
     try {
-      console.log('Recupero dati utente per:', req.user.email);
       const user = await User.findByPk(req.user.userId, {
         attributes: ['id', 'email', 'referralCode', 'nextClickTime', 'referrals']
       });
@@ -113,8 +115,9 @@ module.exports = {
     }
   },
 
-  // Rotta per applicare referral
-  applyReferral: async (req, res) => { // proteggi la rotta
+  // Applica un referral
+  applyReferral: async (req, res) => {
+    console.log('applyReferral chiamato');
     const { refCode } = req.body;
     const userId = req.user.userId;
     try {
@@ -161,6 +164,7 @@ module.exports = {
 
   // Rotta per cliccare il pulsante "ritira"
   clickButton: async (req, res) => {
+    console.log('clickButton chiamato');
     const userId = req.user.userId; // From JWT
     try {
       console.log('Click button ricevuto per utente:', userId);
@@ -205,6 +209,7 @@ module.exports = {
 
   // Recupera la classifica dei referrals
   getReferralLeaderboard: async (req, res) => {
+    console.log('getReferralLeaderboard chiamato');
     try {
       console.log('Recupero classifica referrals.');
       const topReferrers = await User.findAll({

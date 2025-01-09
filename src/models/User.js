@@ -56,6 +56,7 @@ const User = sequelize.define('User', {
   timestamps: true,
   hooks: {
     beforeCreate: async (user) => {
+      console.log('Hook beforeCreate chiamato per l\'utente:', user.email);
       if (user.password) {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
@@ -63,6 +64,9 @@ const User = sequelize.define('User', {
       // Genera un referralCode unico
       if (!user.referralCode) {
         user.referralCode = uuidv4();
+        console.log('ReferralCode generato:', user.referralCode);
+      } else {
+        console.log('ReferralCode già presente:', user.referralCode);
       }
     },
     beforeUpdate: async (user) => {
