@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { getFakeWins } = require('../utils/fakeWins');
 
-// Endpoint to get fake wins
+// Endpoint per ottenere le vincite fittizie
 router.get('/', (req, res) => {
   res.json({ wins: getFakeWins() });
 });

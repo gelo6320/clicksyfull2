@@ -9,13 +9,17 @@ module.exports = {
     try {
       const { email, password, referredBy } = req.body;
 
+      console.log('Registrazione richiesta:', { email, referredBy });
+
       if (!email || !password) {
+        console.log('Email o password mancanti.');
         return res.status(400).json({ message: 'Email e password sono richieste.' });
       }
 
       // Controlla se l'utente esiste già
       let existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
+        console.log('Email già registrata:', email);
         return res.status(400).json({ message: 'Email già registrata.' });
       }
 
@@ -25,6 +29,8 @@ module.exports = {
         password,  // Hashato automaticamente grazie ai hook
         referredBy: referredBy || null,
       });
+
+      console.log('Utente registrato con successo:', newUser.email);
 
       res.status(201).json({ 
         message: 'Utente registrato con successo.',
@@ -44,17 +50,22 @@ module.exports = {
   loginUser: async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log('Login richiesto:', { email });
+
       if (!email || !password) {
+        console.log('Email o password mancanti.');
         return res.status(400).json({ message: 'Email e password sono richieste.' });
       }
 
       const user = await User.findOne({ where: { email } });
       if (!user) {
+        console.log('Utente non trovato:', email);
         return res.status(404).json({ message: 'Utente non trovato.' });
       }
 
       const isMatch = await user.validPassword(password);
       if (!isMatch) {
+        console.log('Password non valida per:', email);
         return res.status(401).json({ message: 'Credenziali non valide.' });
       }
 
@@ -64,6 +75,8 @@ module.exports = {
         process.env.JWT_SECRET,
         { expiresIn: '7d' }
       );
+
+      console.log('Login effettuato per:', email);
 
       res.status(200).json({ 
         message: 'Login effettuato.',
@@ -85,10 +98,12 @@ module.exports = {
   // Get current user
   getCurrentUser: async (req, res) => {
     try {
+      console.log('Recupero dati utente per:', req.user.email);
       const user = await User.findByPk(req.user.userId, {
         attributes: ['id', 'email', 'referralCode', 'nextClickTime', 'referrals']
       });
       if (!user) {
+        console.log('Utente non trovato:', req.user.userId);
         return res.status(404).json({ message: 'Utente non trovato.' });
       }
       res.json({ user });
@@ -103,17 +118,21 @@ module.exports = {
     const { refCode } = req.body;
     const userId = req.user.userId;
     try {
+      console.log(`Applicazione referral: utente=${userId}, refCode=${refCode}`);
       const inviter = await User.findOne({ where: { referralCode: refCode } });
       if (!inviter) {
+        console.log('Referral code non valido:', refCode);
         return res.status(400).json({ message: 'Referral code non valido.' });
       }
 
       const invitee = await User.findByPk(userId);
       if (!invitee) {
+        console.log('Utente non trovato:', userId);
         return res.status(400).json({ message: 'Utente non trovato.' });
       }
 
       if (invitee.referredBy) {
+        console.log('Referral già applicato per:', invitee.email);
         return res.status(400).json({ message: 'Referral già applicato.' });
       }
 
@@ -131,6 +150,8 @@ module.exports = {
       inviter.referrals += 1;
       await inviter.save();
 
+      console.log(`Referral applicato: ${invitee.email} invitato da ${inviter.email}`);
+
       res.status(200).json({ message: 'Referral applicato correttamente.' });
     } catch (error) {
       console.error('Errore durante l\'applicazione del referral:', error);
@@ -142,8 +163,10 @@ module.exports = {
   clickButton: async (req, res) => {
     const userId = req.user.userId; // From JWT
     try {
+      console.log('Click button ricevuto per utente:', userId);
       const user = await User.findByPk(userId);
       if (!user) {
+        console.log('Utente non trovato:', userId);
         return res.status(400).json({ message: 'Utente non trovato.' });
       }
 
@@ -164,11 +187,14 @@ module.exports = {
           inviter.nextClickTime = newOwnerNextClick > new Date() ? newOwnerNextClick : new Date();
           inviter.referrals += 1; // aggiorna classifica
           await inviter.save();
+          console.log(`Ridotto timer per l'invitante: ${inviter.email}`);
         }
       }
 
       // Imposta il prossimo click
       nextClickTime.setHours(nextClickTime.getHours() + 24 - discountHours);
+
+      console.log(`Impostato nextClickTime per ${user.email}: ${nextClickTime}`);
 
       res.status(200).json({ message: 'Click registrato.', nextClickTime });
     } catch (error) {
@@ -180,6 +206,7 @@ module.exports = {
   // Recupera la classifica dei referrals
   getReferralLeaderboard: async (req, res) => {
     try {
+      console.log('Recupero classifica referrals.');
       const topReferrers = await User.findAll({
         where: {
           referrals: {

@@ -9,12 +9,12 @@ function generateFakeWin() {
   return { name, amount, time };
 }
 
-// Initialize with some fake wins
+// Inizializza con 4 vincite
 for (let i = 0; i < 4; i++) { // Inizializza con 4 vincite
   fakeWins.push(generateFakeWin());
 }
 
-// Generate fake wins every 10 seconds
+// Genera nuove vincite ogni 10 secondi
 setInterval(() => {
   const newWin = generateFakeWin();
   fakeWins.unshift(newWin);

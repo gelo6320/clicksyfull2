@@ -2,6 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 const User = sequelize.define('User', {
   id: {
@@ -46,7 +47,7 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  role: { // Aggiunto campo role
+  role: { // Campo per gestire il ruolo dell'utente
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'user', // 'admin' per amministratori
@@ -61,7 +62,7 @@ const User = sequelize.define('User', {
       }
       // Genera un referralCode unico
       if (!user.referralCode) {
-        user.referralCode = require('uuid').v4();
+        user.referralCode = uuidv4();
       }
     },
     beforeUpdate: async (user) => {

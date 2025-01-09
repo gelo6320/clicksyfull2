@@ -1,26 +1,22 @@
+// backend/src/config/db.js
 const { Sequelize } = require('sequelize');
 
-const {
-  DB_HOST,
-  DB_PORT,
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME
-} = process.env;
-
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-  host: DB_HOST,
-  port: DB_PORT,
-  dialect: 'postgres',
-  logging: false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      // A volte è necessario disattivare la verifica del certificato
-      // se Render non usa certificati rilasciati da CA pubblica
-      rejectUnauthorized: false
-    }
+const sequelize = new Sequelize(
+  process.env.DB_NAME, 
+  process.env.DB_USER, 
+  process.env.DB_PASSWORD, 
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // Imposta su true se hai un certificato valido
+      }
+    },
+    logging: false, // Risolve il warning di deprecazione
   }
-});
+);
 
 module.exports = sequelize;

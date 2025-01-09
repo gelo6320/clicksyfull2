@@ -8,6 +8,7 @@ module.exports = {
       const { newStyle } = req.body;
       // Logica per aggiornare lo stile del pulsante, ad esempio salvando in DB
       // Questo è un mock per mostrare la risposta
+      console.log('Cambio stile pulsante con:', newStyle);
       res.json({ message: 'Stile del pulsante aggiornato con successo!' });
     } catch (error) {
       console.error('Errore durante il cambio dello stile del pulsante:', error);
@@ -20,6 +21,7 @@ module.exports = {
     try {
       const { customText } = req.body;
       const link = `https://miosito.com/?ref=${customText}`;
+      console.log('Generazione link referral personalizzato:', link);
       res.json({ link });
     } catch (error) {
       console.error('Errore durante la generazione del link referral:', error);
@@ -33,6 +35,7 @@ module.exports = {
       const { backgroundUrl } = req.body;
       // Logica per cambiare lo sfondo, ad esempio salvando in DB
       // Questo è un mock per mostrare la risposta
+      console.log('Cambio sfondo del sito con:', backgroundUrl);
       res.json({ message: 'Sfondo del sito aggiornato con successo!' });
     } catch (error) {
       console.error('Errore durante il cambio dello sfondo:', error);
@@ -46,6 +49,7 @@ module.exports = {
       const { sectionContent } = req.body;
       // Logica per aggiungere una sezione extra, ad esempio salvando in DB
       // Questo è un mock per mostrare la risposta
+      console.log('Aggiunta sezione extra:', sectionContent);
       res.json({ message: 'Sezione extra aggiunta con successo!' });
     } catch (error) {
       console.error('Errore durante l\'aggiunta della sezione extra:', error);

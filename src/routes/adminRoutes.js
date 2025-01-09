@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const authenticateToken = require('../middleware/auth');
+const User = require('../models/User'); // Importa il modello User
 
 // Middleware per autenticazione admin
 const authenticateAdmin = async (req, res, next) => {
